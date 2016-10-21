@@ -15,7 +15,7 @@ int main(int argc,char* argv[]){
     int line = 1;
     while(getline(o1,s1,'\n')){
         getline(o2,s2,'\n');
-        if(s1.size()!=s2.size()){
+        if(s1!=s2){
             cout << "Line : " << line << endl << s1 << "\t" << s2 << endl;
         }
         line++;

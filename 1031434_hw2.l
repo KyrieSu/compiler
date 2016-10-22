@@ -58,6 +58,7 @@
     #define mul_ass 52 //*=
     #define div_ass 53 //"/="
     #define remainder_ass 54 // %=
+    #define error 55
 %}
 
 /* Regular Expression */
@@ -133,7 +134,27 @@ LINE \n
 <comment1>.	{}
 <comment2>\n { line++;}
 <comment2>. {}
-<comment2>"%}" { BEGIN INITIAL; }
+<comment2>"%}"  { BEGIN INITIAL; }
+[,]+[,]+ { return error; }
+["."]+["."]+ { return error; }
+{Letter}+[.]{Digit}+	{ return error; }
+{Digit}+[.]{Letter}+	{ return error; }
+[.]{Digit}+ { return error; }
+{Digit}+[.]	{ return error; }
+{Digit}+[.]{Digit}+{Letter}+	{ return error; }
+{Letter}+{Digit}+[.]{Digit}+	{ return error; }
+{Digit}+[.]*{Digit}+[E|e][-]*{Digit}+{Letter}+	{ return error; }
+["]+{Letter}+{Digit}+	{return error; }
+[*]+[*]+	{ return error; }
+[*]+[/]+	{ return error; }
+[+]+[-]+	{ return error; }
+[/]+[+]+	{ return error; }
+[*]+[+]+	{ return error; }
+([:][=])+	{ return error; }
+[>]+[=]+	{ return error; }
+[>][<]	{ return error; }
+[=][>]	{ return error; }
+
 
 %%
 
@@ -151,11 +172,12 @@ int main(){
     while((i=yylex())){
         if(i==30){ //EOF
             printf("Token number:%d,value:\"SCANEOF\",line %d \n",i,line);
+            printf("End of the execution\n");
             break;
-        }else if(i>54){ //illegal
-            printf("Line %d:%s is an illegal identifier.\n",line,yytext);
+        }else if(i==55){ //illegal
+            printf("Line %d: %s is an illegal identifier.\n",line,yytext);
         }else{ // normal
-            printf("Token number:%d,value:\"%s\",line %d\n",i,yytext,line);
+            printf("Token number:%d,value:\"%s\",line %d.\n",i,yytext,line);
         }
     }
     return 0;

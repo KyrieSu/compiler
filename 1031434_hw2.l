@@ -1,6 +1,7 @@
 %{
-    #include <cstdio>
-    #include <cstdlib>
+    int line = 1;
+    #include <stdio.h>
+    #include <stdlib.h>
     #define id 1
     #define integer_literal 2
     #define float_literal 3
@@ -8,8 +9,8 @@
     #define str 5
     #define comma 6
     #define semicolon 7
-    #define left_parenthesis 8 //(
-    #define left_parenthesis 9 //)
+    #define left_parenthesis 8
+    #define right_parenthesis 9
 
     /* KEY WORD */
     #define begin_num 10
@@ -60,24 +61,19 @@
 %}
 
 /* Regular Expression */
+%x comment1
+%x comment2
 Digit [0-9]
 Letter [a-zA-Z]
 IntLit {Digit}+
 Id {Letter}({Letter}|{Digit}|_)*
 FPLit {Digit}+[.]{Digit}+
 FEPLit {Digit}+[.]*{Digit}+[E|e][-]*{Digit}+
+LINE \n
 %%
-/* Rule action */
-[ \t\n] { //skip space //skin endofline }
-[Id] { return id; }
-[IntLit] { return integer_literal; }
-[FPLit] { return float_literal; }
-[FEPLit] { return exp_float; }
-\"[^\"\n]*\" { stripquotes(); return str; }
-"," { return comma; }
-";" { return semicolon; }
-"(" { return left_parenthesis; }
-")" { return right_parenthesis; }
+{LINE}	{line++;}
+^[ \t]*\n	{line++;}
+[ \t\n] { }
 [Bb][Ee][Gg][Ii][Nn] { return begin_num; }
 [Ee][Nn][Dd] { return end_num; }
 [Rr][Ee][Aa][Dd] { return read_num; }
@@ -99,6 +95,15 @@ FEPLit {Digit}+[.]*{Digit}+[E|e][-]*{Digit}+
 [Rr][Ee][Aa][Ll] { return real_num; }
 [Bb][Oo][Oo][Ll] { return bool_num; }
 [Ss][Cc][Aa][Nn][Ee][Oo][Ff] { return scaneof; }
+{Id} { return id; }
+{IntLit} { return integer_literal; }
+{FPLit} { return float_literal; }
+{FEPLit} { return exp_float; }
+\"[^\"\n]*\" { striquotes(); return str; }
+"," { return comma; }
+";" { return semicolon; }
+"(" { return left_parenthesis; }
+")" { return right_parenthesis; }
 ":=" { return assignment; }
 "+" { return addition; }
 "-" { return subtraction; }
@@ -120,13 +125,22 @@ FEPLit {Digit}+[.]*{Digit}+[E|e][-]*{Digit}+
 "-=" { return sub_ass; }
 "*=" { return mul_ass; }
 "/=" { return div_ass; }
-"%=" { remain remainder_ass; }
+"%=" { return remainder_ass; }
+<<eof>> { return scaneof; }
+"%%"	{ BEGIN comment1; }
+"{%"	{ BEGIN comment2; }
+<comment1>\n	{ line++;BEGIN INITIAL; }
+<comment1>.	{}
+<comment2>\n { line++;}
+<comment2>. {}
+<comment2>"%}" { BEGIN INITIAL; }
+
 %%
 
-void striquotes(){
+striquotes(){
     int frompos , topos = 0;
     for(frompos=1;frompos<yyleng;frompos++){
-        yytext[topos++] = yytext[fromps];
+        yytext[topos++] = yytext[frompos];
     }
     yyleng -= 2;
     yytext[yyleng] = '\0';
@@ -134,14 +148,15 @@ void striquotes(){
 
 int main(){
     int i;
-    while(i=yylex()){
+    while((i=yylex())){
         if(i==30){ //EOF
-            printf("EOF\n");
+            printf("Token number:%d,value:\"SCANEOF\",line %d \n",i,line);
             break;
         }else if(i>54){ //illegal
-            printf("Line %d:%s is an illegal identifier.\n",yylineno,yytext);
+            printf("Line %d:%s is an illegal identifier.\n",line,yytext);
         }else{ // normal
-            printf("Token number:%d, value:\"%s\",line %d\n",i,yytext,yylineno);
+            printf("Token number:%d,value:\"%s\",line %d\n",i,yytext,line);
         }
     }
+    return 0;
 }

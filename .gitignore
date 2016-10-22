@@ -1,3 +1,4 @@
 test_data/
+lex.yy.c
 *.txt
 *.out

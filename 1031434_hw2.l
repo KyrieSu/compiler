@@ -75,6 +75,25 @@ LINE \n
 {LINE}	{line++;}
 ^[ \t]*\n	{line++;}
 [ \t\n] { }
+[,]+[,]+ { return error; }
+["."]+["."]+ { return error; }
+{Letter}+[.]{Digit}+	{ return error; }
+{Digit}+[.]{Letter}+	{ return error; }
+(0){Digit}+{Letter}+    { return error; }
+[.]{Digit}+ { return error; }
+{Digit}+[.]	{ return error; }
+{Digit}+[.]{Digit}+{Letter}+	{ return error; }
+{Letter}+{Digit}+[.]{Digit}+	{ return error; }
+{Digit}+[.]*{Digit}+[E|e][-]*{Digit}+{Letter}+	{ return error; }
+["]+{Letter}+{Digit}+	{ return error; }
+[*]+[*]+	{ return error; }
+[*]+[/]+	{ return error; }
+[+]+[-]+	{ return error; }
+[/]+[+]+	{ return error; }
+[*]+[+]+	{ return error; }
+[>][<]	{ return error; }
+[=][>]	{ return error; }
+(0)+{IntLit} { return error; }
 [Bb][Ee][Gg][Ii][Nn] { return begin_num; }
 [Ee][Nn][Dd] { return end_num; }
 [Rr][Ee][Aa][Dd] { return read_num; }
@@ -135,26 +154,8 @@ LINE \n
 <comment2>\n { line++;}
 <comment2>. {}
 <comment2>"%}"  { BEGIN INITIAL; }
-[,]+[,]+ { return error; }
-["."]+["."]+ { return error; }
-{Letter}+[.]{Digit}+	{ return error; }
-{Digit}+[.]{Letter}+	{ return error; }
-[.]{Digit}+ { return error; }
-{Digit}+[.]	{ return error; }
-{Digit}+[.]{Digit}+{Letter}+	{ return error; }
-{Letter}+{Digit}+[.]{Digit}+	{ return error; }
-{Digit}+[.]*{Digit}+[E|e][-]*{Digit}+{Letter}+	{ return error; }
-["]+{Letter}+{Digit}+	{return error; }
-[*]+[*]+	{ return error; }
-[*]+[/]+	{ return error; }
-[+]+[-]+	{ return error; }
-[/]+[+]+	{ return error; }
-[*]+[+]+	{ return error; }
 ([:][=])+	{ return error; }
 [>]+[=]+	{ return error; }
-[>][<]	{ return error; }
-[=][>]	{ return error; }
-
 
 %%
 
@@ -175,7 +176,7 @@ int main(){
             printf("End of the execution\n");
             break;
         }else if(i==55){ //illegal
-            printf("Line %d: %s is an illegal identifier.\n",line,yytext);
+            printf("Line %d:\"%s\" is an illegal identifier.\n",line,yytext);
         }else{ // normal
             printf("Token number:%d,value:\"%s\",line %d.\n",i,yytext,line);
         }

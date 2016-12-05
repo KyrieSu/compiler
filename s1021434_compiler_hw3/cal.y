@@ -8,7 +8,7 @@ int abstest(float value);
 float Varvalue(int varvalue);
 void putVarvalue(int varvalue, float value);
 int list[10][2]; //二維列表，左側為var，右側為value
-int tempVar; 
+int tempVar;
 int isHead = 1; // 當第一個(等號左邊的var)讀進時，會變0，保證左邊的值才會被存取
 %}
 
@@ -22,7 +22,7 @@ int index;
 %token SIN COS NEG ABS LOG ADD SUB
 %token ERROR1
 
-%left '=' 
+%left '='
 %left '+' '-'
 %left '*' '/' '%'
 %right '^'
@@ -42,24 +42,24 @@ expr
     | expr '%' expr {$$ = fmod($1,$3);}
     | expr '^' expr {$$ = pow($1,$3);}
     | expr '=' expr {$$ = $3; putVarvalue(tempVar,$3); }
-    | NEG '(' expr ')' { $$ = -$3; } 
+    | NEG '(' expr ')' { $$ = -$3; }
     | ABS '(' expr ')' { $$ = abstest($3); }
     | SIN '(' expr ')' { $$ = sin($3); } //$$ = sin(($3/180*PI));
-    | COS '(' expr ')' { $$ = cos($3); } //$$ = cos(($3/180*PI)); 
+    | COS '(' expr ')' { $$ = cos($3); } //$$ = cos(($3/180*PI));
     | LOG '(' expr ')' { $$ = log($3)/log(10); }
-    | ADD expr { $$ = ($2+1); } 
-    | SUB expr { $$ = ($2-1); } 
+    | ADD expr { $$ = ($2+1); }
+    | SUB expr { $$ = ($2-1); }
     | '(' expr ')' {$$ = $2; }
     | '-' expr %prec UMINUS {$$ = -$2;}
     | NUMBER
-    | VAR { $$ = Varvalue($1); }   
-   // | ERROR1 {printf("syntax error with token \"%s\"\n",yytext);}
+    | VAR { $$ = Varvalue($1); }
+    //| ERROR1 {printf("syntax error with token \"%s\"\n",yytext);}
 ;
 
 %%
 void yyerror(char *s) {
     printf("%s\n", s);
-    
+
 }
 int abstest(float value)
 {
@@ -73,7 +73,7 @@ float Varvalue(int varvalue) //當var第一次被讀入設值為0，當第二次
     {
 	tempVar = varvalue;
 	isHead = 0;
-    }	
+    }
 int find = 0;
 int i,j;
     for(i = 0; i < 10; i++)
@@ -104,7 +104,7 @@ int i,j;
 void putVarvalue(int varvalue, float value) //var值再等號左邊，放入值
 {
 int i;
-isHead = 1; 
+isHead = 1;
 //printf("list[%d][0]\n",varvalue);
     for(i = 0; i < 10; i++)
     {

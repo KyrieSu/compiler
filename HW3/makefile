@@ -9,7 +9,5 @@ lex.yy.o : y.tab.h cal.l
 love : y.tab.o lex.yy.o
 	gcc y.tab.o lex.yy.o -o yacc -ll
 
-run : ./yacc
-	./yacc < test
 clean :
-	rm y.tab.c y.tab.h  y.tab.o ./yacc
+	rm y.tab.c y.tab.h  y.tab.o lex.yy.o ./yacc

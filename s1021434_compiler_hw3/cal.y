@@ -35,13 +35,13 @@ lines
     | lines '\n'
     ;
 expr
-    : expr '+' expr {$$ = $1 + $3;}
-    | expr '-' expr {$$ = $1 - $3;}
-    | expr '*' expr {$$ = $1 * $3;}
-    | expr '/' expr {$$ = $1 / $3;}
-    | expr '%' expr {$$ = fmod($1,$3);}
-    | expr '^' expr {$$ = pow($1,$3);}
-    | expr '=' expr {$$ = $3; putVarvalue(tempVar,$3); }
+    : expr '+' expr { $$ = $1 + $3; }
+    | expr '-' expr { $$ = $1 - $3; }
+    | expr '*' expr { $$ = $1 * $3; }
+    | expr '/' expr { $$ = $1 / $3; }
+    | expr '%' expr { $$ = fmod($1,$3); }
+    | expr '^' expr { $$ = pow($1,$3); }
+    | expr '=' expr { $$ = $3; putVarvalue(tempVar,$3); }
     | NEG '(' expr ')' { $$ = -$3; }
     | ABS '(' expr ')' { $$ = abstest($3); }
     | SIN '(' expr ')' { $$ = sin($3); } //$$ = sin(($3/180*PI));

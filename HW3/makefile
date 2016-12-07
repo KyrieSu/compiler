@@ -10,4 +10,4 @@ love : y.tab.o lex.yy.o
 	gcc y.tab.o lex.yy.o -o yacc -ll
 
 clean :
-	rm y.tab.c y.tab.h  y.tab.o lex.yy.o ./yacc
+	rm y.tab.c y.tab.h  y.tab.o lex.yy.c lex.yy.o ./yacc

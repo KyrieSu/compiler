@@ -43,7 +43,9 @@ expr
     | ABS '(' expr ')' { $$ = fabs($3); }
     | SIN '(' expr ')' { $$ = sin($3); }
     | COS '(' expr ')' { $$ = cos($3); }
-    | LOG '(' expr ')' { $$ = log($3)/log(10); }
+    | LOG '(' expr ')' { $$ = log10($3); }
+    | expr ADD { $$ = ($1+1); }
+    | expr SUB { $$ = ($1-1); }
     | ADD expr { $$ = ($2+1); }
     | SUB expr { $$ = ($2-1); }
     | '(' expr ')' {$$ = $2; }
@@ -58,8 +60,6 @@ void yyerror(char* msg){
 }
 
 double Varvalue(int x){
-    for(int i=1;i<=x;i++)
-    printf("var%d : %f \n",i,arr[i]);
     return arr[x];
 }
 

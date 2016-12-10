@@ -1,11 +1,14 @@
 %{
     #include <stdio.h>
+    #include <string.h>
     extern int yylex();
     extern char* yytext;
     extern int line;
     void yyerror(char*);
-    extern double arr[10];
+    extern double arr[100];
     double Varvalue(int);
+    void setValue(int,double);
+    int tmpIndex;
 %}
 
 %union{
@@ -38,7 +41,7 @@ expr
     | expr '/' expr { $$ = $1 / $3; }
     | expr '%' expr { $$ = fmod($1,$3); }
     | expr '^' expr { $$ = pow($1,$3);}
-    | expr '=' expr { $$ = $3; }
+    | expr '=' expr { $$ = $3; setValue(tmpIndex,$3); }
     | NEG '(' expr ')' { $$ = -$3; }
     | ABS '(' expr ')' { $$ = fabs($3); }
     | SIN '(' expr ')' { $$ = sin($3); }
@@ -59,11 +62,18 @@ void yyerror(char* msg){
     printf("Line %d:%s with token \"%s\"\n",line,msg,yytext);
 }
 
-double Varvalue(int x){
-    return arr[x];
+double Varvalue(int index){
+    if(arr[index]==0)
+        tmpIndex = index;
+    return arr[index];
+}
+
+void setValue(int index,double value){
+    arr[index] = value;
 }
 
 int main(){
+    memset(&arr,0,50); //initize arr value = 0
     yyparse();
     return 0;
 }

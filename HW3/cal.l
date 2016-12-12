@@ -3,13 +3,12 @@
     #include <stdlib.h>
     #include <math.h>
     int line = 1;
-    double arr[10];
 %}
 int CHARtoINT(char*);
 %%
 [0-9]+"."[0-9]+ { yylval.num = strtod(yytext,NULL); return NUMBER; }
 [0-9]+  { yylval.num = strtod(yytext,NULL); return NUMBER; }
-(var|VAR)[0-9] { yylval.index = CHARtoINT(yytext); return VAR; }
+(var|VAR)[0-9]+ { yylval.index = CHARtoINT(yytext); return VAR; }
 sin|SIN  { return SIN; }
 cos|COS  { return COS; }
 neg|NEG  { return NEG; }

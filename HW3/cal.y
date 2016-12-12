@@ -1,14 +1,17 @@
 %{
     #include <stdio.h>
     #include <string.h>
+    #include <stdlib.h>
+    #define angle 180/3.1415926
     extern int yylex();
     extern char* yytext;
     extern int line;
     void yyerror(char*);
-    extern double arr[100];
+    double arr[100];
     double Varvalue(int);
     void setValue(int,double);
     int tmpIndex;
+    int flag = 1;
 %}
 
 %union{
@@ -44,8 +47,8 @@ expr
     | expr '=' expr { $$ = $3; setValue(tmpIndex,$3); }
     | NEG '(' expr ')' { $$ = -$3; }
     | ABS '(' expr ')' { $$ = fabs($3); }
-    | SIN '(' expr ')' { $$ = sin($3); }
-    | COS '(' expr ')' { $$ = cos($3); }
+    | SIN '(' expr ')' { $$ = sin($3*angle); }
+    | COS '(' expr ')' { $$ = cos($3*angle); }
     | LOG '(' expr ')' { $$ = log10($3); }
     | expr ADD { $$ = ($1+1); }
     | expr SUB { $$ = ($1-1); }
@@ -63,17 +66,24 @@ void yyerror(char* msg){
 }
 
 double Varvalue(int index){
-    if(arr[index]==0)
+    if(flag==1){
         tmpIndex = index;
+        flag = 0;
+    }
+    if(tmpIndex!=index && arr[index]==0){
+        printf("Line %d:var%d is undefined\n",line,index);
+        exit(-1);
+    }
     return arr[index];
 }
 
 void setValue(int index,double value){
+    flag = 1;
     arr[index] = value;
 }
 
 int main(){
-    memset(&arr,0,50); //initize arr value = 0
+    memset(&arr,0,100); //initize arr value = 0
     yyparse();
     return 0;
 }

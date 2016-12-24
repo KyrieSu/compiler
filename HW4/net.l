@@ -7,6 +7,8 @@
 
 %x comment
 %%
+[Ii][Nn][Pp][Uu][Tt]"("[0-9]+")" { yylval.index = CHARtoINT(yytext); return INPUT; }
+[Oo][Uu][Tt][Pp][Uu][Tt]"("[0-9]+")" { yylval.index = CHARtoINT(yytext); return OUTPUT; }
 [Bb][Uu][Ff][Ff] { return BUFFER; }
 [Nn][Oo][Tt] { return NOT; }
 [Nn][Aa][Nn][Dd] { return NAND; }
@@ -25,4 +27,8 @@
 
 int yywrap(){
     return 1;
+}
+
+int CHARtoINT(char* text){
+    return text[3] = '0';
 }

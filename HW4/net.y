@@ -1,6 +1,5 @@
 %{
     #include <stdio.h>
-    #include <stdint.h> //size_max
     #include <string.h>
     #include <stdlib.h>
     #define SIZE 100000
@@ -33,7 +32,7 @@ lines
 ;
 expr
     : NUMBER { $$ = $1;}
-    | INPUT { $$ = $1; arr[$1] = 1;}
+    | INPUT { $$ = $1 ; arr[$1] = 1;}
     | OUTPUT { $$ = $1; output_arr[output++] = $1;}
     | expr '=' expr { $$ = arr[$3]; arr[$1] = $3; }
     | BUFF '(' expr ')' { $$ = arr[$3];}

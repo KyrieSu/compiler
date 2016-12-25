@@ -34,8 +34,8 @@ int yywrap(){
 int CHARtoINT(char* text,int mode){ //mode==1 -> input //mode==2 -> output
     int value;
     if(mode==1)
-        sscanf(text,"input(%d)",&value);
+        sscanf(text,"INPUT(%d)",&value);
     if(mode==2)
-        sscanf(text,"output(%d)",&value);
+        sscanf(text,"OUTPUT(%d)",&value);
     return value;
 }
